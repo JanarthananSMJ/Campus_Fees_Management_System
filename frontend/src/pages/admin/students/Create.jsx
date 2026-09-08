@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
-import { CheckCircle2, KeyRound, User, Users } from "lucide-react";
+import { CheckCircle2, KeyRound, User } from "lucide-react";
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
+  "w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
 const labelClass = "mb-1.5 block text-sm font-medium text-slate-700";
 
 export default function Students() {
@@ -24,9 +24,6 @@ export default function Students() {
     address: "",
     loginId: "",
     studentPassword: "",
-    parentName: "",
-    parentPhone: "",
-    parentPassword: "",
   });
 
   const nav = useNavigate();
@@ -66,9 +63,6 @@ export default function Students() {
       address: "",
       loginId: "",
       studentPassword: "",
-      parentName: "",
-      parentPhone: "",
-      parentPassword: "",
     });
 
     loadClasses();
@@ -93,7 +87,7 @@ export default function Students() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Add Student</h1>
-        <p className="mt-1 text-slate-500">Create a student record along with student & parent logins.</p>
+        <p className="mt-1 text-slate-500">Create a student record along with a student login.</p>
       </div>
 
       <form onSubmit={add} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
@@ -158,31 +152,6 @@ export default function Students() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-          <Users className="h-4 w-4 text-indigo-600" />
-          <h2 className="font-semibold text-slate-900">Parent Information</h2>
-        </div>
-        <div className="grid gap-4 pt-5 sm:grid-cols-2 lg:grid-cols-3">
-          <div>
-            <label className={labelClass}>Parent Name</label>
-            <input className={inputClass} value={form.parentName} onChange={set("parentName")} required />
-          </div>
-          <div>
-            <label className={labelClass}>Parent Phone</label>
-            <input className={inputClass} value={form.parentPhone} onChange={set("parentPhone")} required />
-          </div>
-          <div>
-            <label className={labelClass}>Parent Password</label>
-            <input
-              type="password"
-              className={inputClass}
-              value={form.parentPassword}
-              onChange={set("parentPassword")}
-              required
-            />
-          </div>
-        </div>
-
         <button
           type="submit"
           className="mt-6 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:opacity-95"
@@ -200,12 +169,6 @@ export default function Students() {
               Login ID: <b>{lastCreds.loginId}</b> &nbsp;·&nbsp; Password:{" "}
               <b>{lastCreds.studentPassword}</b>
             </p>
-            {lastCreds.parentLoginId && (
-              <p className="mt-1">
-                Parent Login: <b>{lastCreds.parentLoginId}</b> &nbsp;·&nbsp; Password:{" "}
-                <b>{lastCreds.parentPassword}</b>
-              </p>
-            )}
           </div>
         </div>
       )}

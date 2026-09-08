@@ -12,16 +12,9 @@ const studentSchema = new mongoose.Schema({
 
   // ❌ REMOVE enrollmentNumber completely
 
-  parentName: String,
-  parentPhone: String,
   address: String,
 
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-
-  parentUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },

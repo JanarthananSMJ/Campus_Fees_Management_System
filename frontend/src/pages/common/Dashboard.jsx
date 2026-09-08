@@ -12,7 +12,6 @@ export default function Dashboard() {
   if (user.role === "admin") return <Navigate to="/admin/dashboard" />;
   if (user.role === "teacher") return <Navigate to="/teacher/fees" />;
   if (user.role === "student") return <Navigate to={`/student/${user.studentId}/overview`} />;
-  if (user.role === "parent") return <Navigate to={`/student/${user.studentId}/overview`} />;
 
   return <Navigate to="/login" />;
 }

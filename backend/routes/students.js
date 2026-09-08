@@ -29,9 +29,6 @@ router.post("/", auth(["admin"]), async (req, res) => {
       rollNumber,
       loginId,
       studentPassword,
-      parentName,
-      parentPhone,
-      parentPassword
     } = req.body;
 
     // ✅ BASIC VALIDATION
@@ -42,10 +39,6 @@ router.post("/", auth(["admin"]), async (req, res) => {
     // ✅ DUPLICATE CHECKS
     if (await User.findOne({ loginId })) {
       return res.status(400).json({ message: "Student loginId already exists" });
-    }
-
-    if (await User.findOne({ parentPhone })) {
-      return res.status(400).json({ message: "Parent phone already exists" });
     }
 
     // ✅ CREATE STUDENT
@@ -66,15 +59,6 @@ router.post("/", auth(["admin"]), async (req, res) => {
     });
     student.user = studentUser._id;
 
-    // ✅ CREATE PARENT USER
-    const parentUser = await User.create({
-      name: parentName,
-      parentPhone,
-      password: await bcrypt.hash(parentPassword, 10),
-      role: "parent"
-    });
-    student.parentUser = parentUser._id;
-
     await student.save();
 
     console.log("✅ Student created:", student._id);
@@ -85,8 +69,6 @@ router.post("/", auth(["admin"]), async (req, res) => {
       credentials: {
         loginId,
         studentPassword,
-        parentPhone,
-        parentPassword
       }
     });
 
@@ -137,7 +119,7 @@ router.get(
 // ======================================
 // GET BASIC STUDENT INFO
 // ======================================
-router.get("/:id", auth(["admin", "teacher", "parent"]), async (req, res) => {
+router.get("/:id", auth(["admin", "teacher"]), async (req, res) => {
   try {
     const s = await Student.findById(req.params.id);
     res.json(s);
@@ -158,11 +140,6 @@ router.get("/:id/profile", auth(), async (req, res) => {
 
     // STUDENT CAN SEE ONLY OWN PROFILE
     if (user.role === "student" && student.user.toString() !== user.id) {
-      return res.status(403).json({ message: "Access denied" });
-    }
-
-    // PARENT CAN SEE ONLY HIS CHILD
-    if (user.role === "parent" && student.parentUser?.toString() !== user.id) {
       return res.status(403).json({ message: "Access denied" });
     }
 

@@ -6,7 +6,6 @@ const ROLES = [
   { key: "admin", label: "Admin", icon: ShieldCheck },
   { key: "teacher", label: "Teacher", icon: Users },
   { key: "student", label: "Student", icon: GraduationCap },
-  { key: "parent", label: "Parent", icon: Users },
 ];
 
 export default function Login() {
@@ -24,11 +23,9 @@ export default function Login() {
       let body = {};
 
       if (mode === "admin" || mode === "teacher") {
-        body = { email, password };
+        body = { email, password, role: mode };
       } else if (mode === "student") {
         body = { loginId: email, password };
-      } else if (mode === "parent") {
-        body = { parentPhone: email, password };
       }
 
       const { data } = await api.post("/auth/login", body);
@@ -41,7 +38,7 @@ export default function Login() {
         dest = "/admin/dashboard";
       } else if (data.user.role === "teacher") {
         dest = "/teacher/fees";
-      } else if (data.user.role === "student" || data.user.role === "parent") {
+      } else if (data.user.role === "student") {
         if (data.user.studentId) dest = `/student/${data.user.studentId}/overview`;
       }
 
@@ -53,12 +50,7 @@ export default function Login() {
     }
   };
 
-  const placeholder =
-    mode === "student"
-      ? "Student Login ID"
-      : mode === "parent"
-      ? "Parent Phone Number"
-      : "Email address";
+  const placeholder = mode === "student" ? "Student Login ID" : "Email address";
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50">
@@ -80,7 +72,7 @@ export default function Login() {
           </h1>
           <p className="max-w-sm text-white/80">
             Track dues, invoices, and payments in one place — built for admins,
-            teachers, students and parents alike.
+            teachers, and students alike.
           </p>
         </div>
 
@@ -103,7 +95,7 @@ export default function Login() {
           <p className="mt-1 text-sm text-slate-500">Sign in to continue to your dashboard.</p>
 
           {/* Role tabs */}
-          <div className="mt-6 grid grid-cols-4 gap-2">
+          <div className="mt-6 grid grid-cols-3 gap-2">
             {ROLES.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -129,7 +121,7 @@ export default function Login() {
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={placeholder}
@@ -144,7 +136,7 @@ export default function Login() {
                 <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   type="password"
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"

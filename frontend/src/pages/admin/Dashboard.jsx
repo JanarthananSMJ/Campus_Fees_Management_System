@@ -66,7 +66,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <p className="font-semibold text-slate-900">Add a Student</p>
-              <p className="text-sm text-slate-500">Create a new student & parent login</p>
+              <p className="text-sm text-slate-500">Create a new student login</p>
             </div>
           </div>
           <ArrowRight className="h-5 w-5 text-slate-300 transition group-hover:translate-x-1 group-hover:text-indigo-500" />

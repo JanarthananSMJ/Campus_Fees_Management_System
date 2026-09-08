@@ -14,25 +14,21 @@ const router = express.Router();
 // -------------------------------
 router.post('/login', async (req, res) => {
   try {
-    const { loginId, rollNumber, email, parentPhone, password } = req.body;
+    const { loginId, rollNumber, email, password, role } = req.body;
 
     let user = null;
 
-    // Parent login (phone + password)
-    if (parentPhone) {
-      user = await User.findOne({ parentPhone, role: "parent" });
-    }
     // Student login (loginId)
-    else if (loginId) {
+    if (loginId) {
       user = await User.findOne({ loginId, role: "student" });
     }
     // Student old login (rollNumber)
     else if (rollNumber) {
       user = await User.findOne({ rollNumber, role: "student" });
     }
-    // Admin / Teacher (email)
+    // Admin / Teacher (email) — role disambiguates when the same email is used for both
     else if (email) {
-      user = await User.findOne({ email });
+      user = await User.findOne(role ? { email, role } : { email });
     }
 
     if (!user) return res.status(400).json({ message: "Invalid login details" });
@@ -52,9 +48,6 @@ router.post('/login', async (req, res) => {
       if (user.role === "student") {
         const s = await Student.findOne({ user: user._id });
         if (s) studentId = s._id.toString();
-      } else if (user.role === "parent") {
-        const s = await Student.findOne({ parentUser: user._id });
-        if (s) studentId = s._id.toString();
       }
     } catch (e) {
       console.error("Warning: unable to find student link:", e.message);
@@ -69,7 +62,6 @@ router.post('/login', async (req, res) => {
         email: user.email || null,
         loginId: user.loginId || null,
         rollNumber: user.rollNumber || null,
-        parentPhone: user.parentPhone || null,
         studentId,
       }
     });

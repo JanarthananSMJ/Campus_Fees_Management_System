@@ -4,7 +4,7 @@ import api from "../../../api/api";
 import { CheckCircle2, Clock, IndianRupee, PlusCircle, Receipt } from "lucide-react";
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
+  "w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
 
 const StudentFees = () => {
   const { id } = useParams();
