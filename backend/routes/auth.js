@@ -63,6 +63,7 @@ router.post('/login', async (req, res) => {
         loginId: user.loginId || null,
         rollNumber: user.rollNumber || null,
         studentId,
+        department: user.department || null,
       }
     });
 

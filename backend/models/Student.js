@@ -5,8 +5,8 @@ const studentSchema = new mongoose.Schema({
   dob: Date,
   gender: String,
 
-  class: String,
-  section: String,
+  department: String,
+  course: String,
 
   rollNumber: { type: String, required: true }, // ✅ keep this
 

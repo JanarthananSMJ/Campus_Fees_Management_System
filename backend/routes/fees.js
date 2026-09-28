@@ -1,5 +1,7 @@
 const express = require('express');
 const Fee = require('../models/Fee');
+const Student = require('../models/Student');
+const User = require('../models/User');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -12,11 +14,21 @@ router.post('/', auth(['admin', 'accountant']), async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Get all fee records (admin + accountant + teacher)
+// Get all fee records (admin + accountant see everything, teacher sees only their class)
 router.get('/', auth(['admin', 'accountant', 'teacher']), async (req, res) => {
   try {
+    let studentFilter = {};
+
+    if (req.user.role === 'teacher') {
+      const teacher = await User.findById(req.user.id);
+      if (!teacher?.department) return res.json([]);
+
+      const deptStudents = await Student.find({ department: teacher.department }).select('_id');
+      studentFilter = { student: { $in: deptStudents.map((s) => s._id) } };
+    }
+
     const list = await Fee
-      .find()
+      .find(studentFilter)
       .populate('student') // student detail show
       .sort({ createdAt: -1 }); // latest first
     res.json(list);
@@ -57,7 +69,8 @@ router.get('/:id/invoice', async (req, res) => {
     doc.moveDown();
 
     doc.fontSize(12).text(`Student Name: ${fee.student.name}`);
-    doc.text(`Class & Section: ${fee.student.class} - ${fee.student.section}`);
+    doc.text(`Department: ${fee.student.department}`);
+    doc.text(`Course: ${fee.student.course}`);
     doc.text(`Amount: ₹${fee.amount}`);
     doc.text(`Due Date: ${new Date(fee.dueDate).toDateString()}`);
     doc.text(`Status: ${fee.paid ? 'Paid' : 'Pending'}`);

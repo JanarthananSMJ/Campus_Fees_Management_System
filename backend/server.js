@@ -17,6 +17,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const studentRoutes = require('./routes/students');
 const feeRoutes = require('./routes/fees');
+const teacherRoutes = require('./routes/teachers');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/fees', feeRoutes);
+app.use('/api/teachers', teacherRoutes);
 
 
 // MongoDB URL .env se aayega (Atlas ya local dono ke liye kaam karega)

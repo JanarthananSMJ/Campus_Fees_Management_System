@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["admin", "teacher", "student"],
     required: true
-  }
+  },
+
+  // Department a teacher is assigned to (teacher role only)
+  department: String
 }, { timestamps: true });
 
 // Same email may belong to different role accounts (e.g. one person testing

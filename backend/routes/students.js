@@ -23,8 +23,8 @@ router.post("/", auth(["admin"]), async (req, res) => {
 
     const {
       name, dob, gender,
-      class: className,
-      section,
+      department,
+      course,
       address,
       rollNumber,
       loginId,
@@ -32,7 +32,7 @@ router.post("/", auth(["admin"]), async (req, res) => {
     } = req.body;
 
     // ✅ BASIC VALIDATION
-    if (!name || !className || !section || !rollNumber) {
+    if (!name || !department || !course || !rollNumber) {
       return res.status(400).json({ message: "Missing required student fields" });
     }
 
@@ -44,8 +44,8 @@ router.post("/", auth(["admin"]), async (req, res) => {
     // ✅ CREATE STUDENT
     const student = new Student({
       name, dob, gender,
-      class: className,
-      section,
+      department,
+      course,
       address,
       rollNumber
     });
@@ -88,8 +88,8 @@ router.post("/", auth(["admin"]), async (req, res) => {
 router.get("/", auth(["admin", "teacher"]), async (req, res) => {
   try {
     const list = await Student.find().sort({
-      class: 1,
-      section: 1,
+      department: 1,
+      course: 1,
       rollNumber: 1,
     });
     res.json(list);
@@ -99,14 +99,14 @@ router.get("/", auth(["admin", "teacher"]), async (req, res) => {
 });
 
 // ======================================
-// GET STUDENTS BY CLASS
+// GET STUDENTS BY COURSE
 // ======================================
 router.get(
-  "/class/:className",
+  "/course/:courseName",
   auth(["admin", "teacher"]),
   async (req, res) => {
     try {
-      const list = await Student.find({ class: req.params.className }).sort({
+      const list = await Student.find({ course: req.params.courseName }).sort({
         rollNumber: 1,
       });
       res.json(list);
@@ -221,7 +221,8 @@ router.get("/:id/report", authPDF, async (req, res) => {
     doc.moveDown();
 
     doc.fontSize(12).text(`Name: ${student.name}`);
-    doc.text(`Class: ${student.class} - Section: ${student.section}`);
+    doc.text(`Department: ${student.department}`);
+    doc.text(`Course: ${student.course}`);
     doc.text(`Roll No: ${student.rollNumber}`);
     doc.moveDown();
 
