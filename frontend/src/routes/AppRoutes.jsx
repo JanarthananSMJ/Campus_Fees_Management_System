@@ -43,13 +43,13 @@ export default function AppRoutes() {
         <Route path="students/create" element={<AdminStudentCreate />} />
         <Route path="students/list" element={<AdminStudentList />} />
         <Route path="teachers/create" element={<AdminTeacherCreate />} />
-      </Route>
 
-      {/* ADMIN → STUDENT PROFILE */}
-      <Route path="/admin/students/:id" element={<AdminStudentLayout />}>
-        <Route path="overview" element={<StudentOverview />} />
-        <Route path="fees" element={<StudentFees />} />
-        <Route path="report" element={<StudentReport />} />
+        {/* ADMIN → STUDENT PROFILE */}
+        <Route path="students/:id" element={<AdminStudentLayout />}>
+          <Route path="overview" element={<StudentOverview />} />
+          <Route path="fees" element={<StudentFees />} />
+          <Route path="report" element={<StudentReport />} />
+        </Route>
       </Route>
 
       {/* TEACHER */}

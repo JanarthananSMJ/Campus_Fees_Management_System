@@ -44,6 +44,7 @@ async function main() {
 main()
   .then(() => {
     console.log("Connected to DB ✔️");
+    return createDefaultAdmin();
   })
   .catch((err) => {
     console.log("Database connection error ❌", err);
@@ -56,20 +57,21 @@ app.listen(8080, () => {
 
 
 async function createDefaultAdmin() {
-  const adminExists = await User.findOne({ role: "admin" });
+  const email = process.env.ADMIN_EMAIL || "admin@school.com";
+  const password = process.env.ADMIN_PASSWORD || "admin123";
+
+  const adminExists = await User.findOne({ email, role: "admin" });
 
   if (!adminExists) {
-    const hashed = await bcrypt.hash("admin123", 10);
+    const hashed = await bcrypt.hash(password, 10);
     await User.create({
       name: "School Principal",
-      email: "admin@school.com",
+      email,
       password: hashed,
       role: "admin"
     });
     console.log("✔ Default Admin Created");
-    console.log("   Email: admin@school.com");
-    console.log("   Password: admin123");
+    console.log("   Email:", email);
+    console.log("   Password:", password);
   }
 }
-
-createDefaultAdmin();

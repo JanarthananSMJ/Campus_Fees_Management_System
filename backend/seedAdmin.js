@@ -11,18 +11,21 @@ async function seed() {
     await mongoose.connect(MONGO_URL);
     console.log("DB connected");
 
+    const email = process.env.ADMIN_EMAIL || 'admin@school.com';
+    const password = process.env.ADMIN_PASSWORD || 'admin123';
+
     // Check if admin exists
-    const exists = await User.findOne({ email: 'admin@school.com' });
+    const exists = await User.findOne({ email, role: 'admin' });
     if (exists) {
       console.log("Admin already exists");
       process.exit(0);
     }
 
     // Create admin user with encrypted password
-    const hash = await bcrypt.hash('admin123', 10);
+    const hash = await bcrypt.hash(password, 10);
     await User.create({
       name: 'Admin',
-      email: 'admin@school.com',
+      email,
       password: hash,
       role: 'admin'
     });
