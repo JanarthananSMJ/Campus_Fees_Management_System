@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/api";
 import { useParams } from "react-router-dom";
 import { CheckCircle2, Clock, Receipt } from "lucide-react";
+import { EmptyState, StatusBadge } from "../../components/ui";
 
 export default function Fees() {
   const { id } = useParams();
@@ -17,11 +18,7 @@ export default function Fees() {
   };
 
   if (fees.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-slate-400">
-        No fee records yet
-      </div>
-    );
+    return <EmptyState>No fee records yet</EmptyState>;
   }
 
   return (
@@ -46,13 +43,9 @@ export default function Fees() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                f.paid ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
-              }`}
-            >
+            <StatusBadge status={f.paid ? "paid" : "pending"}>
               {f.paid ? "Paid" : "Pending"}
-            </span>
+            </StatusBadge>
             <a
               href={`http://localhost:8080/api/fees/${f._id}/invoice`}
               target="_blank"

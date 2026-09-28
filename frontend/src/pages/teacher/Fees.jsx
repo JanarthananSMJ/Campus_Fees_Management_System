@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/api";
 import { CheckCircle2, Clock } from "lucide-react";
+import { Card, PageHeader, StatusBadge } from "../../components/ui";
 
 export default function TeacherFees() {
   const [fees, setFees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   useEffect(() => {
     load();
   }, []);
 
   const load = async () => {
-    const { data } = await api.get("/fees");
-    setFees(data);
+    setLoading(true);
+    try {
+      const { data } = await api.get("/fees");
+      setFees(data);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Student Fees Overview</h1>
-        <p className="mt-1 text-slate-500">Fee status across all students.</p>
-      </div>
+      <PageHeader
+        title={user.department ? `${user.department} — Fees Overview` : "Student Fees Overview"}
+        description="Fee status for all students in your department."
+      />
 
-      <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+      <Card className="overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
@@ -38,24 +46,20 @@ export default function TeacherFees() {
                 <td className="px-5 py-3 text-slate-600">₹{f.amount}</td>
                 <td className="px-5 py-3 text-slate-500">{new Date(f.dueDate).toDateString()}</td>
                 <td className="px-5 py-3">
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                      f.paid ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
-                    }`}
-                  >
-                    {f.paid ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
+                  <StatusBadge status={f.paid ? "paid" : "pending"} icon={f.paid ? CheckCircle2 : Clock}>
                     {f.paid ? "Paid" : "Pending"}
-                  </span>
+                  </StatusBadge>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {fees.length === 0 && (
+        {!loading && fees.length === 0 && (
           <p className="p-8 text-center text-slate-400">No fee records found</p>
         )}
-      </div>
+        {loading && <p className="p-8 text-center text-slate-400">Loading fee records...</p>}
+      </Card>
     </div>
   );
 }

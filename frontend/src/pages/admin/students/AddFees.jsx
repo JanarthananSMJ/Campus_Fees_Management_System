@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../../api/api";
 import { CheckCircle2, Clock, IndianRupee, PlusCircle, Receipt } from "lucide-react";
-
-const inputClass =
-  "w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
+import { Button, Card, Input, SectionHeading, StatusBadge } from "../../../components/ui";
 
 const StudentFees = () => {
   const { id } = useParams();
@@ -102,11 +100,8 @@ const StudentFees = () => {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
-        <div className="flex items-center gap-2 border-b border-slate-100 px-5 py-4">
-          <Receipt className="h-4 w-4 text-indigo-600" />
-          <h2 className="font-semibold text-slate-900">Fee Records</h2>
-        </div>
+      <Card className="overflow-hidden">
+        <SectionHeading icon={Receipt} title="Fee Records" />
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
@@ -120,34 +115,23 @@ const StudentFees = () => {
           <tbody className="divide-y divide-slate-100">
             {fees.map((fee) => {
               const overdue = !fee.paid && new Date(fee.dueDate) < new Date();
+              const status = fee.paid ? "paid" : overdue ? "overdue" : "pending";
               return (
                 <tr key={fee._id} className="hover:bg-slate-50">
                   <td className="px-5 py-3 font-medium text-slate-800">₹{fee.amount}</td>
                   <td className="px-5 py-3 text-slate-500">{new Date(fee.dueDate).toDateString()}</td>
                   <td className="px-5 py-3">
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                        fee.paid
-                          ? "bg-emerald-50 text-emerald-700"
-                          : overdue
-                          ? "bg-rose-50 text-rose-700"
-                          : "bg-amber-50 text-amber-700"
-                      }`}
-                    >
-                      {fee.paid ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
+                    <StatusBadge status={status} icon={fee.paid ? CheckCircle2 : Clock}>
                       {fee.paid ? "Paid" : overdue ? "Overdue" : "Pending"}
-                    </span>
+                    </StatusBadge>
                   </td>
                   <td className="px-5 py-3 text-slate-500">₹{calculateFine(fee)}</td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-end gap-3">
                       {!fee.paid && (
-                        <button
-                          onClick={() => markPaid(fee._id)}
-                          className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
-                        >
+                        <Button size="sm" onClick={() => markPaid(fee._id)}>
                           Mark Paid
-                        </button>
+                        </Button>
                       )}
                       <a
                         href={`http://localhost:8080/api/fees/${fee._id}/invoice`}
@@ -166,60 +150,45 @@ const StudentFees = () => {
         </table>
 
         {fees.length === 0 && <p className="p-8 text-center text-slate-400">No fee records yet</p>}
-      </div>
+      </Card>
 
-      <form onSubmit={addFees} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
-          <PlusCircle className="h-4 w-4 text-indigo-600" />
-          <h2 className="font-semibold text-slate-900">Add New Fees</h2>
-        </div>
-
-        <div className="grid gap-4 pt-5 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="relative">
-            <IndianRupee className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
+      <Card className="overflow-hidden">
+        <SectionHeading icon={PlusCircle} title="Add New Fees" />
+        <form onSubmit={addFees} className="p-6">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Input
+              icon={IndianRupee}
               type="number"
               placeholder="Amount"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className={`${inputClass} pl-9`}
               required
+            />
+            <Input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              required
+            />
+            <Input
+              type="number"
+              placeholder="Discount / Scholarship"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
+            />
+            <Input
+              type="text"
+              placeholder="Note (optional)"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
             />
           </div>
 
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className={inputClass}
-            required
-          />
-
-          <input
-            type="number"
-            placeholder="Discount / Scholarship"
-            value={discount}
-            onChange={(e) => setDiscount(e.target.value)}
-            className={inputClass}
-          />
-
-          <input
-            type="text"
-            placeholder="Note (optional)"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:opacity-95 disabled:opacity-60"
-        >
-          {loading ? "Saving..." : "Add Fees"}
-        </button>
-      </form>
+          <Button type="submit" disabled={loading} className="mt-5">
+            {loading ? "Saving..." : "Add Fees"}
+          </Button>
+        </form>
+      </Card>
     </div>
   );
 };

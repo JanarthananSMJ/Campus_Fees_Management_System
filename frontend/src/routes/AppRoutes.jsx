@@ -9,6 +9,7 @@ import AdminLayout from "../layouts/AdminLayout.jsx";
 import AdminDashboard from "../pages/admin/Dashboard";
 import AdminStudentCreate from "../pages/admin/students/Create.jsx";
 import AdminStudentList from "../pages/admin/students/List.jsx";
+import AdminTeacherCreate from "../pages/admin/teachers/Create.jsx";
 
 // ADMIN → STUDENT PROFILE
 import AdminStudentLayout from "../layouts/StudentLayout.jsx";
@@ -41,6 +42,7 @@ export default function AppRoutes() {
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="students/create" element={<AdminStudentCreate />} />
         <Route path="students/list" element={<AdminStudentList />} />
+        <Route path="teachers/create" element={<AdminTeacherCreate />} />
       </Route>
 
       {/* ADMIN → STUDENT PROFILE */}

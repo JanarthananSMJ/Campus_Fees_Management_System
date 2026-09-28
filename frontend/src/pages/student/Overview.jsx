@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/api";
 import { useParams } from "react-router-dom";
 import { CalendarDays, Home, User } from "lucide-react";
+import { Card } from "../../components/ui";
 
 export default function Overview() {
   const { id } = useParams();
@@ -17,17 +18,18 @@ export default function Overview() {
   };
 
   if (!student) {
-    return <div className="rounded-2xl border border-slate-100 bg-white p-8 text-slate-400 shadow-sm">Loading...</div>;
+    return <Card className="p-8 text-slate-400">Loading...</Card>;
   }
 
   const rows = [
-    { icon: User, label: "Class & Section", value: `${student.class} - ${student.section}` },
+    { icon: User, label: "Department", value: student.department || "—" },
+    { icon: User, label: "Course", value: student.course || "—" },
     { icon: CalendarDays, label: "Date of Birth", value: student.dob?.slice(0, 10) || "—" },
     { icon: Home, label: "Address", value: student.address || "—" },
   ];
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+    <Card className="p-6">
       <div className="flex items-center gap-4 border-b border-slate-100 pb-6">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-2xl font-bold text-white">
           {student.name?.charAt(0).toUpperCase()}
@@ -38,7 +40,7 @@ export default function Overview() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {rows.map(({ icon: Icon, label, value }) => (
           <div key={label} className="rounded-xl bg-slate-50 p-4">
             <Icon className="h-4 w-4 text-indigo-500" />
@@ -47,6 +49,6 @@ export default function Overview() {
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
