@@ -77,9 +77,9 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 lg:flex">
+    <div className="h-screen overflow-hidden bg-slate-50 lg:flex">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col bg-slate-900 text-slate-200 lg:flex">
+      <aside className="hidden w-64 shrink-0 flex-col bg-slate-900 text-slate-200 lg:flex lg:h-screen">
         {sidebar}
       </aside>
 
@@ -93,7 +93,7 @@ export default function AdminLayout() {
         </div>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex h-screen min-w-0 flex-1 flex-col">
         {/* Mobile top bar */}
         <header className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3 lg:hidden">
           <div className="flex items-center gap-2">

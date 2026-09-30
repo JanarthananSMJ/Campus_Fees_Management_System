@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
 import { CheckCircle2, KeyRound, Search, User } from "lucide-react";
 import { DEPARTMENTS, DEPARTMENT_COURSES } from "../../../constants/academics";
-import { Button, Card, Input, PageHeader, Select, SectionHeading } from "../../../components/ui";
+import { Button, Card, Input, PageHeader, Select, SectionHeading, Toast } from "../../../components/ui";
 
 export default function Students() {
   const [courses, setCourses] = useState([]);
@@ -11,6 +11,7 @@ export default function Students() {
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [lastCreds, setLastCreds] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
@@ -56,6 +57,7 @@ export default function Students() {
       const { data } = await api.post("/students", form);
 
       setLastCreds(data.credentials || null);
+      setShowPopup(true);
 
       setForm({
         name: "",
@@ -92,6 +94,10 @@ export default function Students() {
 
   return (
     <div className="space-y-8">
+      {showPopup && (
+        <Toast message="New Student added" onClose={() => setShowPopup(false)} />
+      )}
+
       <PageHeader title="Add Student" description="Create a student record along with a student login." />
 
       <Card className="overflow-hidden">

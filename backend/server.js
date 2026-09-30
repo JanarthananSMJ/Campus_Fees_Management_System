@@ -57,8 +57,8 @@ app.listen(8080, () => {
 
 
 async function createDefaultAdmin() {
-  const email = process.env.ADMIN_EMAIL || "admin@school.com";
-  const password = process.env.ADMIN_PASSWORD || "admin123";
+  const email = process.env.ADMIN_EMAIL || "admin@1.com";
+  const password = process.env.ADMIN_PASSWORD || "123456";
 
   const adminExists = await User.findOne({ email, role: "admin" });
 

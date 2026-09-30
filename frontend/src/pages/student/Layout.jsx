@@ -18,7 +18,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-100 bg-white">
+      <header className="sticky top-0 z-10 border-b border-slate-100 bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">

@@ -11,8 +11,8 @@ async function seed() {
     await mongoose.connect(MONGO_URL);
     console.log("DB connected");
 
-    const email = process.env.ADMIN_EMAIL || 'admin@school.com';
-    const password = process.env.ADMIN_PASSWORD || 'admin123';
+    const email = process.env.ADMIN_EMAIL || 'admin@1.com';
+    const password = process.env.ADMIN_PASSWORD || '123456';
 
     // Check if admin exists
     const exists = await User.findOne({ email, role: 'admin' });

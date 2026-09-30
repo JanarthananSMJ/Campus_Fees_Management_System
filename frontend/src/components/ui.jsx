@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { CheckCircle2, Eye, EyeOff, X } from "lucide-react";
 
 export const inputStyles =
   "w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400";
@@ -12,16 +13,58 @@ export function Field({ label, className = "", children }) {
   );
 }
 
-export function Input({ label, wrapperClassName, className = "", icon: Icon, ...props }) {
+export function Input({ label, wrapperClassName, className = "", icon: Icon, type, ...props }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === "password";
+  const inputType = isPassword && showPassword ? "text" : type;
+
   return (
     <Field label={label} className={wrapperClassName}>
       <div className="relative">
         {Icon && (
           <Icon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         )}
-        <input className={`${inputStyles} ${Icon ? "pl-9" : ""} ${className}`} {...props} />
+        <input
+          type={inputType}
+          className={`${inputStyles} ${Icon ? "pl-9" : ""} ${isPassword ? "pr-9" : ""} ${className}`}
+          {...props}
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            tabIndex={-1}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        )}
       </div>
     </Field>
+  );
+}
+
+export function Toast({ message, onClose, duration = 3000 }) {
+  useEffect(() => {
+    if (!duration) return;
+    const timer = setTimeout(onClose, duration);
+    return () => clearTimeout(timer);
+  }, [onClose, duration]);
+
+  return (
+    <div className="fixed right-6 top-6 z-50 flex items-start gap-3 rounded-2xl border border-emerald-100 bg-white px-5 py-4 shadow-xl">
+      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+      <p className="text-sm font-semibold text-slate-900">{message}</p>
+      <button
+        type="button"
+        onClick={onClose}
+        className="ml-2 text-slate-400 hover:text-slate-600"
+        aria-label="Dismiss"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    </div>
   );
 }
 

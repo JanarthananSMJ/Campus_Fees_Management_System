@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import api from "../../../api/api";
 import { CheckCircle2, KeyRound, UserCog } from "lucide-react";
 import { DEPARTMENTS } from "../../../constants/academics";
-import { Button, Card, Input, PageHeader, Select, SectionHeading } from "../../../components/ui";
+import { Button, Card, Input, PageHeader, Select, SectionHeading, Toast } from "../../../components/ui";
 
 export default function Teachers() {
   const [teachers, setTeachers] = useState([]);
   const [success, setSuccess] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
@@ -34,6 +35,7 @@ export default function Teachers() {
       await api.post("/teachers", form);
 
       setSuccess(`Teacher added for ${form.department}`);
+      setShowPopup(true);
       setForm({ name: "", email: "", password: "", department: "" });
       loadTeachers();
     } finally {
@@ -43,6 +45,10 @@ export default function Teachers() {
 
   return (
     <div className="space-y-8">
+      {showPopup && (
+        <Toast message="New Teacher added" onClose={() => setShowPopup(false)} />
+      )}
+
       <PageHeader
         title="Add Teacher"
         description="Create a teacher login and assign the department whose students' fees they can view."
